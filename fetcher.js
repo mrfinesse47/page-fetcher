@@ -1,31 +1,14 @@
-const fs = require("fs");
+const { myFileWriter } = require("./fileSys");
 
-//const content = "Some content!";
+const content = "Some content!";
 
-const net = require("net");
-const conn = net.createConnection({
-  host: "example.edu",
-  port: 80,
-});
-conn.setEncoding("UTF8");
+const request = require("request");
 
-conn.on("connect", () => {
-  console.log(`Connected to server!`);
-
-  conn.write(`GET / HTTP/1.1\r\n`);
-  conn.write(`Host: example.edu\r\n`);
-  conn.write(`\r\n`);
-});
-
-conn.on("data", (data) => {
-  fs.writeFile("./files/test.txt", data, (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    } else {
-      console.log("wrote file successfully");
-    }
-    //file written successfully
-  });
-  conn.end();
+request("https://www.example.com/", (error, response, body) => {
+  console.log("statusCode:", response && response.statusCode); // Print the response status code if a response was received
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    myFileWriter(body);
+  } else {
+    console.log("error:", response.statusCode);
+  }
 });
