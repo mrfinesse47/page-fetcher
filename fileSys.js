@@ -1,30 +1,39 @@
 const fs = require("fs");
-const readline = require("readline");
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+const isValid = require("is-valid-path");
+
+const { FILENAME } = require("./constants");
 
 const myFileWriter = (body) => {
-  fs.access("./files/test3.html", (err) => {
-    if (err) {
-      console.log("The file does not exist. Writing file...");
-      writeFile(body);
-    } else {
-      console.log("The file exists.");
-      rl.question(
-        "Do you want to overwrite the existing file? [Y/N]",
-        (answer) => {
-          if (answer === "y" || answer === "yes") {
-            writeFile(body);
-          } else {
-            console.log("Very well then, goodbye!");
-          }
-          rl.close();
-        }
-      );
-    }
+  const readline = require("readline");
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
   });
+  if (isValid(FILENAME)) {
+    fs.access(FILENAME, (err) => {
+      if (err) {
+        console.log("The file does not exist. Writing file...");
+        writeFile(body);
+        rl.close();
+      } else {
+        console.log("The file exists.");
+        rl.question(
+          "Do you want to overwrite the existing file? [Y/N]",
+          (answer) => {
+            if (answer === "y" || answer === "yes") {
+              writeFile(body);
+            } else {
+              console.log("Very well then, goodbye!");
+            }
+            rl.close();
+          }
+        );
+      }
+    });
+  } else {
+    console.log("invalid file name");
+    rl.close();
+  }
 
   const writeFile = (file) => {
     fs.writeFile("./files/test3.html", body, (err) => {
@@ -32,9 +41,8 @@ const myFileWriter = (body) => {
         console.error(err);
         return;
       } else {
-        console.log("\nwrote file successfully");
+        console.log("wrote file successfully");
       }
-      //file written successfully
     });
   };
 };
