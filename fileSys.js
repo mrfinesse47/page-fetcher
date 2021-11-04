@@ -35,7 +35,7 @@ const myFileWriter = (body) => {
     rl.close();
   }
 
-  const writeFile = (file) => {
+  const writeFile = (body) => {
     fs.writeFile("./files/test3.html", body, (err) => {
       if (err) {
         console.error(err);
